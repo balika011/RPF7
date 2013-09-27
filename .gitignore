@@ -136,6 +136,6 @@ App_Data/*.ldf
 
 #RPF7
 
-/FPF7Console/keys.cpp
-/FPF7Console/dump/
-/FPF7Console/list.txt
+/RPF7Console/keys.cpp
+/RPF7Console/dump/
+/RPF7Console/list.txt

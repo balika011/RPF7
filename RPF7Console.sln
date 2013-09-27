@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.20827.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FPF7Console", "FPF7Console\FPF7Console.vcxproj", "{9211B2A8-5FBE-476E-80DC-2E793F170A3D}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RPF7Console", "RPF7Console\RPF7Console.vcxproj", "{9211B2A8-5FBE-476E-80DC-2E793F170A3D}"
 	ProjectSection(ProjectDependencies) = postProject
 		{31C17F78-A2BF-4136-9B70-81EC77881812} = {31C17F78-A2BF-4136-9B70-81EC77881812}
 		{E32DC2B6-10B6-40C1-8814-4ADCD93A7681} = {E32DC2B6-10B6-40C1-8814-4ADCD93A7681}

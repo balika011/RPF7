@@ -8,13 +8,13 @@
 #include "CString.h"
 #include "platforms.h"
 
-#define IS_XBOX360 1
-#define IS_PS3 0
+#define IS_XBOX360 0
+#define IS_PS3 1
 
 FILE* file;
 platforms* platform;
 
-unsigned char* read(int offset, int size)
+unsigned char* read(long offset, int size)
 {
 	fseek(file, offset, SEEK_SET);
 
@@ -72,7 +72,9 @@ void listEntry(char* path, FILE* file, unsigned char* entries, RPF7HeaderTools* 
 			FILE* out;
 			fopen_s(&out, (char*) CString("%s\\%s", path, entries + header->getEntriesCount() * sizeof(RPF7Entry) +(entry->getFilenameOffset() << header->getFilenamesShift())).Get(), "wb");
 
-			fwrite(read(entry->getOffset() << 9, entry->getUncompressedSize()), 1, entry->getUncompressedSize(), out);
+			unsigned char* buffer = read(entry->getOffset() << 9, entry->getUncompressedSize());
+			fwrite(buffer, 1, entry->getUncompressedSize(), out);
+			delete [] buffer;
 
 			fclose(out);
 
@@ -119,7 +121,7 @@ int main(int argc, char* argv[])
 	fopen_s(&file, "C:\\Users\\Home\\Desktop\\GTA V XBOX360\\disc1\\common.rpf", "rb");
 #elif IS_PS3
 	platform = new ps3();
-	fopen_s(&file, "C:\\Users\\Home\\Downloads\\Grand.Theft.Auto.V.PS3-DUPLEX\\BLES01807-[Grand Theft Auto V]\\PS3_GAME\\USRDIR\\audio_rel.rpf", "rb");
+	fopen_s(&file, "C:\\Users\\Home\\Downloads\\Grand.Theft.Auto.V.PS3-DUPLEX\\BLES01807-[Grand Theft Auto V]\\PS3_GAME\\USRDIR\\part2.rpf", "rb");
 #else
 #error NOT SUPPORTED!!!
 #endif
