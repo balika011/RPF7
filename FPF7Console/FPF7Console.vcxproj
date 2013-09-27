@@ -84,10 +84,13 @@
   <ItemGroup>
     <ClCompile Include="CString.cpp" />
     <ClCompile Include="FPF7Console.cpp" />
+    <ClCompile Include="keys.cpp" />
+    <ClCompile Include="ps3.cpp" />
+    <ClCompile Include="xbox360.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CString.h" />
-    <ClInclude Include="keys.h" />
+    <ClInclude Include="platforms.h" />
     <ClInclude Include="RPF7.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

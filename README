@@ -1,6 +1,6 @@
 Project made whit Visual Studio 2013 RC.
 
-You need add FPF7Console/keys.h whit GTA V AES keys.
+You need add FPF7Console/keys.cpp whit GTA V AES keys.
 
 Example:
 unsigned char xbox360key[32] = {

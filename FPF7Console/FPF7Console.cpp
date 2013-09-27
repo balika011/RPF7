@@ -6,17 +6,17 @@
 
 #include "RPF7.h"
 #include "CString.h"
-#include "keys.h"
+#include "platforms.h"
+
+#define IS_XBOX360 1
+#define IS_PS3 0
 
 FILE* file;
-
-#define IS_XBOX360 0
-#define IS_PS3 1
+platforms* platform;
 
 unsigned char* read(int offset, int size)
 {
 	fseek(file, offset, SEEK_SET);
-
 
 	unsigned char* buffer = new unsigned char[size];
 	if (buffer == NULL)
@@ -87,13 +87,7 @@ void listEntry(char* path, FILE* file, unsigned char* entries, RPF7HeaderTools* 
 			if (entry->isEncrypted())
 			{
 				AESContext context;
-#if IS_XBOX360
-				AesSetKey(&context, xbox360key);
-#elif IS_PS3
-				AesSetKey(&context, ps3key);
-#else
-#error NOT SUPPORTED!!!
-#endif
+				AesSetKey(&context, platform->getAESkey());
 				AesDecrypt(&context,
 				filebuffer,
 				filebuffer,
@@ -102,64 +96,13 @@ void listEntry(char* path, FILE* file, unsigned char* entries, RPF7HeaderTools* 
 
 			FILE* out;
 			fopen_s(&out, (char*) CString("%s\\%s", path, entries + header->getEntriesCount() * sizeof(RPF7Entry) +(entry->getFilenameOffset() << header->getFilenamesShift())).Get(), "wb");
-#if IS_XBOX360
-			struct LZXstate* lzx_state = LZXinit(16);
 
 			unsigned char* outbuffer = new unsigned char[entry->getUncompressedSize()];
-			memset(outbuffer, 0, entry->getUncompressedSize());
 
-			int outputSize = 0;
-
-			int offset = 0;
-
-			while (outputSize != entry->getUncompressedSize())
-			{
-				int tmpoutputSize = 0;
-				int tmpinputSize = 0;
-
-				if (*(byte*) (filebuffer + offset) == 0xff)
-				{
-					tmpoutputSize = *(byte*) (filebuffer + offset + 1) << 8;
-					tmpoutputSize |= *(byte*) (filebuffer + offset + 2);
-					tmpinputSize = *(byte*) (filebuffer + offset + 3) << 8;
-					tmpinputSize |= *(byte*) (filebuffer + offset + 4);
-
-					offset += 5;
-				}
-				else
-				{
-					tmpoutputSize = 0x8000;
-					tmpinputSize = (*(byte*) (filebuffer + offset) << 8) | *(byte*) (filebuffer + offset + 1);
-					if (tmpinputSize == 0)
-						break;
-					offset += 2;
-				}
-
-				int res = LZXdecompress(lzx_state, filebuffer + offset, outbuffer + outputSize, tmpinputSize, tmpoutputSize);
-
-				offset += tmpinputSize;
-				outputSize += tmpoutputSize;
-
-				if (res != 0)
-					printf("%s: %i\n", CString("%s\\%s", path, entries + header->getEntriesCount() * sizeof(RPF7Entry) +(entry->getFilenameOffset() << header->getFilenamesShift())).Get(), res);
-			}
+			platform->decompressBuffer(filebuffer, outbuffer, entry->getCompressedSize(), entry->getUncompressedSize());
 
 			fwrite(outbuffer, 1, entry->getUncompressedSize(), out);
 
-			LZXteardown(lzx_state);
-
-			delete [] outbuffer;
-#elif IS_PS3
-			//fwrite(filebuffer, 1, entry->getCompressedSize(), out);
-			
-			unsigned char* outbuffer = new unsigned char[entry->getUncompressedSize()];
-
-			inflate(filebuffer, outbuffer, entry->getCompressedSize(), entry->getUncompressedSize());
-
-			fwrite(outbuffer, 1, entry->getUncompressedSize(), out);
-#else
-#error NOT SUPPORTED!!!
-#endif
 			fclose(out);
 
 			delete [] filebuffer;
@@ -172,8 +115,10 @@ void listEntry(char* path, FILE* file, unsigned char* entries, RPF7HeaderTools* 
 int main(int argc, char* argv[])
 {
 #if IS_XBOX360
+	platform = new xbox360();
 	fopen_s(&file, "C:\\Users\\Home\\Desktop\\GTA V XBOX360\\disc1\\common.rpf", "rb");
 #elif IS_PS3
+	platform = new ps3();
 	fopen_s(&file, "C:\\Users\\Home\\Downloads\\Grand.Theft.Auto.V.PS3-DUPLEX\\BLES01807-[Grand Theft Auto V]\\PS3_GAME\\USRDIR\\audio_rel.rpf", "rb");
 #else
 #error NOT SUPPORTED!!!
@@ -192,13 +137,7 @@ int main(int argc, char* argv[])
 	unsigned char* entries = read(sizeof(RPF7Header), header->getEntriesCount() * sizeof(RPF7Entry) +header->getFilenamesLength());
 
 	AESContext context;
-#if IS_XBOX360
-	AesSetKey(&context, xbox360key);
-#elif IS_PS3
-	AesSetKey(&context, ps3key);
-#else
-#error NOT SUPPORTED!!!
-#endif
+	AesSetKey(&context, platform->getAESkey());
 	AesDecrypt(&context, entries, entries, header->getEntriesCount() * sizeof(RPF7Entry) + header->getFilenamesLength());
 
 	FILE* out;

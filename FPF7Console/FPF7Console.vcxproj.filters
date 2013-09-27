@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\platforms">
+      <UniqueIdentifier>{b3da811a-99a0-42b7-9b1c-7ac208aa7ade}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\platforms">
+      <UniqueIdentifier>{9392a652-1932-4d50-b302-0e0ff1e93965}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FPF7Console.cpp">
@@ -20,6 +26,15 @@
     </ClCompile>
     <ClCompile Include="CString.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ps3.cpp">
+      <Filter>Source Files\platforms</Filter>
+    </ClCompile>
+    <ClCompile Include="xbox360.cpp">
+      <Filter>Source Files\platforms</Filter>
+    </ClCompile>
+    <ClCompile Include="keys.cpp">
+      <Filter>Source Files\platforms</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -29,8 +44,8 @@
     <ClInclude Include="CString.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="keys.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="platforms.h">
+      <Filter>Header Files\platforms</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
